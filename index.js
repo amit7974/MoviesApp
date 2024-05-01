@@ -1,35 +1,17 @@
-
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
 
-import FooterComponent from '../Components/Footer';
-import HeaderComponent from '../Components/Header';
-import AboutContainer from '../Container/About';
-import ContactContainer from '../Container/Contact';
-import DetailsContainer from '../Container/Details';
-import HomeContainer from '../Container/Home';
-import MoviesContainer from '../Container/Movies';
-import SearchContainer from '../Container/Search';
-import TvSeriesContainer from '../Container/TVSeries';
-const  RouteComponent = ()=>{
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 
-    return (
-        <>
-            <BrowserRouter>
-                <HeaderComponent />
-                    <Routes>
-                        <Route path="/" element={<HomeContainer />} />
-                        <Route path='/about' element={<AboutContainer />} />
-                        <Route path="/movies" element={<MoviesContainer />} />
-                        <Route path="/series" element={<TvSeriesContainer />} />
-                        <Route path="/search" element={<SearchContainer />} />
-                        <Route path="/contact" element={<ContactContainer />} />
-                        <Route path="/details/:movieid/:mediatype" element={<DetailsContainer />} />
-                    </Routes>        
-                <FooterComponent />
-            </BrowserRouter>
-        </>
-    )
-}
-
-export default RouteComponent;
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
