@@ -1,47 +1,80 @@
-import React from 'react';
-import Container from 'react-bootstrap/Container';
+import axios from 'axios';
+import React, { useEffect } from 'react';
+import ListGroup from 'react-bootstrap/ListGroup';
+import { BsFillXCircleFill } from "react-icons/bs";
+import './style.css';
 
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
-const HeaderComponent = ()=>{
-    const navData = [
-        {name:'Home', link:'/'},
-        {name:'Movies', link:'/movies'},
-        {name:'Tv Series', link:'/series'},
-        {name:'Search', link:'/search'},
-        {name:'Contact Us', link:'/contact'},
-        {name: 'About Us', link: '/about'}
-    ]
+const LeftListBarComponent = (
+    {
+        selectedGenres,
+        setSelectedGenres,
+        genres,
+        setGenres,
+        type,
+        setPage
+        }
+)=>{
+
+    const API_KEY = process.env.REACT_APP_NOT_SECRET_CODE;
+    
+
+    const GetDataList = async ()=>{
+        const {data:{genres}} = await axios.get(`https://api.themoviedb.org/3/genre/${type}/list?api_key=${API_KEY}&language=en-US`);
+        //console.log('genres', genres);
+        setGenres(genres)
+    }
+    useEffect(()=>{
+        
+        GetDataList();
+        return ()=>{
+            setGenres({});
+        }
+        //eslint-disable-next-line
+    }, [])
+
+    const handleAdd = (genre)=>{
+        setSelectedGenres([...selectedGenres, genre])
+        //console.log('oldSelectedGenres', selectedGenres)
+        setGenres(genres.filter((g)=>{ return g.id !== genre.id}));
+        return setPage(1)
+    }
+    const handleRemove = (genre)=>{
+        setSelectedGenres(
+            selectedGenres.filter((g)=>{ 
+                return g.id !== genre.id
+            })
+        )
+        //console.log('oldSelectedGenres', selectedGenres)
+        setGenres([...genres,genre]);
+        return setPage(1)
+    }
 
     return (
-        <header  className='header'>
-            <Navbar bg="dark" expand="lg">
-                <Container>
-                    <Navbar.Brand>My Entertainment</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="navbarScroll" />
-                    <Navbar.Collapse id="navbarScroll">
-                    <Nav
-                        className="me-auto my-2 my-lg-0"
-                        style={{ maxHeight: '100px' }}
-                        navbarScroll
-                    >
-                        {
-                            navData.map((item)=>{
-                                return (
-                                    <Nav key={item.name}>
-                                        <Link to={item.link}>{item.name}</Link>
-                                    </Nav> 
-                                )
-                            })
-                        }
-                    </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-                    
-        </header>
+        <aside className='asideBar'>
+            <h3>Filter By :- </h3>
+            <ListGroup>
+                {
+                    selectedGenres && selectedGenres.map((item)=>{
+                        return (
+                            <ListGroup.Item className='selected' onClick={()=>{return handleRemove(item)}} key={`${item.id}newtag`}>
+                                {item.name}
+                                <i><BsFillXCircleFill /></i>
+                            </ListGroup.Item>
+                        )
+                    })
+                }
+                {
+                    genres && genres.length > 0 ? genres.map((item)=>{
+                        return(
+                            <ListGroup.Item key={item.id} onClick={()=>{return handleAdd(item)}}>
+                                {item.name}
+                            </ListGroup.Item>
+                        )
+                    }) : 'Lading content...'
+                }
+            </ListGroup>
+        </aside>
     )
 }
 
-export default HeaderComponent;
+export default LeftListBarComponent;
