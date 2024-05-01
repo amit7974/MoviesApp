@@ -1,44 +1,42 @@
-import React from "react";
-import ReactPaginate from "react-paginate";
+
+import React from 'react';
 import './style.css';
-const PaginationComponent = (props)=>{
-    const {maxnum, activenum, handleClick} = props
-    const forcePageActive = parseInt(activenum) - 1;
-    const handlePageClick = (e)=>{
-        console.log('hello', e.selected)
-        let pageNo = parseInt(e.selected) + 1
-        handleClick(pageNo);
-        window.scrollTo(0, 0)
-    }
-      
+const SearchBarCardComponents = ({searchValue, setSearchValue, typeValue, setTypeValue, filterData})=>{
     
-    return(
+    const changeSearchHandle = (e)=>{
+        setSearchValue(e.target.value)
+    }
+    const chagneValueHandler = (e)=>{
+        console.log(e.target.value)
+        setTypeValue(e.target.value)
+    }
+    const handleSubmit = (e)=>{
+        e.preventDefault();
+        filterData()
+    }
+    return (
         <>
-            <div className="paginationWap">
-                <ReactPaginate
-                    previousLabel={"<"}
-                    nextLabel={">"}
-                    breakLabel={"..."}
-                    pageCount={maxnum}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={2}
-                    onPageChange={handlePageClick}
-                    containerClassName={"pagination justify-content-center"}
-                    pageClassName={"page-item"}
-                    pageLinkClassName={"page-link"}
-                    previousClassName={"page-item"}
-                    previousLinkClassName={"page-link"}
-                    nextClassName={"page-item"}
-                    nextLinkClassName={"page-link"}
-                    breakClassName={"page-item"}
-                    breakLinkClassName={"page-link"}
-                    activeClassName={"active"}
-                    renderOnZeroPageCount={null}
-                    forcePage={forcePageActive}
-                />
+            <div className='searchBox'>
+                <div className="container">
+                    <h6>Type movie or tv show name to find it</h6>
+                    <div className='checkBoxSec'>
+                        <label htmlFor="tvFind">
+                            <input type="radio" value="tv" onChange={chagneValueHandler} checked={typeValue === 'tv' ? true : false} name="findSeriesType" id="tvFind" />
+                            <span>Tv </span>
+                        </label>
+                        <label htmlFor="seriesFind">
+                            <input type="radio" value="movie" onChange={chagneValueHandler} checked={typeValue === 'movie' ? true : false} name="findSeriesType" id="seriesFind" />
+                            <span>Movies </span>
+                        </label>
+                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <input type="search" value={searchValue} onChange={changeSearchHandle} placeholder="Search here" />
+                        <input type="submit"  value="FIND" />
+                    </form>
+                </div>
             </div>
         </>
     )
 }
 
-export  default PaginationComponent;
+export default SearchBarCardComponents;
