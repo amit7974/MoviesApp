@@ -1,80 +1,44 @@
-import axios from 'axios';
-import React, { useEffect } from 'react';
-import ListGroup from 'react-bootstrap/ListGroup';
-import { BsFillXCircleFill } from "react-icons/bs";
+import React from "react";
+import ReactPaginate from "react-paginate";
 import './style.css';
-
-const LeftListBarComponent = (
-    {
-        selectedGenres,
-        setSelectedGenres,
-        genres,
-        setGenres,
-        type,
-        setPage
-        }
-)=>{
-
-    const API_KEY = process.env.REACT_APP_NOT_SECRET_CODE;
+const PaginationComponent = (props)=>{
+    const {maxnum, activenum, handleClick} = props
+    const forcePageActive = parseInt(activenum) - 1;
+    const handlePageClick = (e)=>{
+        console.log('hello', e.selected)
+        let pageNo = parseInt(e.selected) + 1
+        handleClick(pageNo);
+        window.scrollTo(0, 0)
+    }
+      
     
-
-    const GetDataList = async ()=>{
-        const {data:{genres}} = await axios.get(`https://api.themoviedb.org/3/genre/${type}/list?api_key=${API_KEY}&language=en-US`);
-        //console.log('genres', genres);
-        setGenres(genres)
-    }
-    useEffect(()=>{
-        
-        GetDataList();
-        return ()=>{
-            setGenres({});
-        }
-        //eslint-disable-next-line
-    }, [])
-
-    const handleAdd = (genre)=>{
-        setSelectedGenres([...selectedGenres, genre])
-        //console.log('oldSelectedGenres', selectedGenres)
-        setGenres(genres.filter((g)=>{ return g.id !== genre.id}));
-        return setPage(1)
-    }
-    const handleRemove = (genre)=>{
-        setSelectedGenres(
-            selectedGenres.filter((g)=>{ 
-                return g.id !== genre.id
-            })
-        )
-        //console.log('oldSelectedGenres', selectedGenres)
-        setGenres([...genres,genre]);
-        return setPage(1)
-    }
-
-    return (
-        <aside className='asideBar'>
-            <h3>Filter By :- </h3>
-            <ListGroup>
-                {
-                    selectedGenres && selectedGenres.map((item)=>{
-                        return (
-                            <ListGroup.Item className='selected' onClick={()=>{return handleRemove(item)}} key={`${item.id}newtag`}>
-                                {item.name}
-                                <i><BsFillXCircleFill /></i>
-                            </ListGroup.Item>
-                        )
-                    })
-                }
-                {
-                    genres && genres.length > 0 ? genres.map((item)=>{
-                        return(
-                            <ListGroup.Item key={item.id} onClick={()=>{return handleAdd(item)}}>
-                                {item.name}
-                            </ListGroup.Item>
-                        )
-                    }) : 'Lading content...'
-                }
-            </ListGroup>
-        </aside>
+    return(
+        <>
+            <div className="paginationWap">
+                <ReactPaginate
+                    previousLabel={"<"}
+                    nextLabel={">"}
+                    breakLabel={"..."}
+                    pageCount={maxnum}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={2}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination justify-content-center"}
+                    pageClassName={"page-item"}
+                    pageLinkClassName={"page-link"}
+                    previousClassName={"page-item"}
+                    previousLinkClassName={"page-link"}
+                    nextClassName={"page-item"}
+                    nextLinkClassName={"page-link"}
+                    breakClassName={"page-item"}
+                    breakLinkClassName={"page-link"}
+                    activeClassName={"active"}
+                    renderOnZeroPageCount={null}
+                    forcePage={forcePageActive}
+                />
+            </div>
+        </>
     )
 }
 
-export default LeftListBarComponent;
+export  default PaginationComponent;
