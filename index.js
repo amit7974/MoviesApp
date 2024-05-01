@@ -1,93 +1,165 @@
-import React from 'react';
+
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
-import { BsFacebook, BsGithub, BsGoogle, BsLinkedin, BsStackOverflow, BsTwitter, BsYoutube } from "react-icons/bs";
-import './style.css';
-const  ContactContainer = ()=>{
-    const myData = [
-        {name:'Facebook', link:'https://www.facebook.com/rohitazadmalik/', text:'Follow to my facebook.'},
-        {name:'Linkedin', link:'https://www.linkedin.com/in/rohitazad/', text:'Follow to my linkedin.'},
-        {name:'Twitter', link:'https://twitter.com/rohitazad', text:'Follow to my twitter.'},
-        {name:'StackOverFlow', link:'https://stackoverflow.com/users/1365428/rohit-azad-malik', text:'Check out to my stackoverflow account.'},
-        {name:'Blog', link:'https://rohitazadmalik.blogspot.com/', text:'Follow to my blog.'},
-        {name:'GitHub', link:'https://github.com/rohitazad', text:'Follow to my github account.'},
-        {name:'YouTube', link:'https://www.youtube.com/c/AzadMalikRohit', text:'Follow to my youtube channel.'},
-        {name:'Email', link:'mailto:learncodingwithbhai@gmail.com',  text:'write to me a mail'}
-    ]
-    return (
-        <div className='contactWrap'>
-        <Container>
+import { useParams } from 'react-router-dom';
+import DarkVariantExample from '../../Components/Carousel';
+import { img_300, img_not_available } from '../../config';
+import './details.css';
+
+const DetailsContainer = ()=>{
+    const params = useParams();
+    const [content, setContent] = useState();
+    const [video, setVideo] = useState();
+    const [credits, setCredits] = useState();
+    const titleName =  content && content.name && content.name !== '' ? content.name : content && content.title && content.title !== '' ?  content.title : '';
+    
+
+
+    // console.log('params', params);
+    const id = params.movieid || '';
+    const _media_type = params && params.mediatype &&  params.mediatype !== '' ? params.mediatype.toLowerCase() : '';
+    const API_KEY = process.env.REACT_APP_NOT_SECRET_CODE;
+
+    const fetchData = async () =>{
+        try{
+          const {data} = await axios.get(`https://api.themoviedb.org/3/${_media_type}/${id}?api_key=${API_KEY}&language=en-US`);
+          setContent(data);
+          //console.log('fetchData details',  data);
+        }catch(error){
+          console.error(error)
+        }
+    }
+    const fetchVideo = async () =>{
+        try{
+          const {data} = await axios.get(`https://api.themoviedb.org/3/${_media_type}/${id}/videos?api_key=${API_KEY}&language=en-US`);
+          setVideo(data.results[0]?.key);
+          //console.log('fetchVideo',  data);
+        }catch(error){
+          console.error(error)
+        }
+    }
+
+    const creditsFetch = async ()=>{
+        try{
+          const {data} = await axios.get(`https://api.themoviedb.org/3/${_media_type}/${id}/credits?api_key=${API_KEY}&language=en-US`);
+          setCredits(data.cast);
+          console.log('sdata',  data);
+        }catch(error){
+          console.error(error)
+        }
+    }
+
+    useEffect(()=>{
+        fetchData();
+        fetchVideo();
+        creditsFetch();
+        //eslint-disable-next-line
+    }, [])
+
+    const renderDataHtml = ()=>{
+        const ImageURL = content.poster_path ? img_300 + content.poster_path : img_not_available;
+        const tagline = content.tagline || '';
+        const vote_average = parseInt(content.vote_average);
+        const original_language = content.original_language || '';
+        const adult = !content.adult ? '10+' : '18+';
+        const origin_country = content.origin_country && content.origin_country[0] ? content.origin_country[0] : content.production_countries && content.production_countries[0] && content.production_countries[0].name ? content.production_countries[0].name : '';
+        const overview = content.overview;
+        const first_air_date = content.first_air_date || content.release_date;
+        const  budget = content.budget || '';
+        const genres = content.genres && content.genres.length > 0 ? content.genres.map((item)=> <span  key={item.id}>{item.name}</span>) : '' ;
+        return (
             <Row>
-                <Col>
-                    <p>CONNECT WITH US</p>
-                    <h1>Get in Touch</h1>
-                </Col>
-            </Row>
-            <Row>
-                <Col className='conectIcon'>
-                    <ul className='socialIconsList'>
-                        <li>
-                            <a rel="noreferrer" href="https://www.facebook.com/rohitazadmalik/" target="_blank">
-                                <BsFacebook />
-                            </a>
-                        </li>
-                        <li>
-                            <a rel="noreferrer" href="https://www.linkedin.com/in/rohitazad/" target="_blank">
-                                <BsLinkedin />
-                            </a>
-                        </li>
-                        <li>
-                            <a rel="noreferrer" href="https://twitter.com/rohitazad" target="_blank">
-                                <BsTwitter />
-                            </a>
-                        </li>
-                        <li>
-                            <a rel="noreferrer" href="https://stackoverflow.com/users/1365428/rohit-azad-malik" target="_blank">
-                                <BsStackOverflow />
-                            </a>
-                        </li>
-                        <li>
-                            <a rel="noreferrer" href="https://rohitazadmalik.blogspot.com/" target="_blank">
-                                <BsGoogle />
-                            </a>
-                        </li>
-                        <li>
-                            <a rel="noreferrer" href="https://github.com/rohitazad" target="_blank">
-                                <BsGithub />
-                            </a>
-                        </li>
-                        <li>
-                            <a rel="noreferrer" href="https://www.youtube.com/c/AzadMalikRohit" target="_blank">
-                                <BsYoutube />
-                            </a>
-                        </li> 
-                    </ul>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <ListGroup className='contactList'>
+                <Col className='col-12'>
+                    <h1>
+                        {titleName} 
                         {
-                            myData && myData.length > 0 ? myData.map((item)=>{
-                                return (
-                                    <ListGroup.Item key={item.name}>
-                                        <span>{item.text}</span>
-                                        <a href={item.link} rel="noreferrer"  target="_blank">
-                                            {item.link}
-                                        </a>
-                                    </ListGroup.Item>
-                                )
-                            }) : ''
+                            tagline && tagline !== '' ? <small> {tagline}</small> : ''
                         }
-                        
-                    </ListGroup>
+                    </h1>
+                </Col>
+                <Col className='col-12 col-xl-6'>
+                    <div className='card card--details'>
+                        <div className='card__cover'>
+                            <img src={ImageURL} alt="myimage" />
+                        </div>
+                        <div className='card__content'>
+                            <div className="card__wrap">
+                                <span className="card__rate"> {vote_average}</span>
+
+                                <ul className="card__list">
+                                    <li>{original_language}</li>
+                                    <li>{adult}</li>
+                                </ul>
+                            </div>
+                            <ul className="card__meta">
+                                <li>
+                                    <span>Genre:</span> 
+                                    <span className='linkTag'>{genres}</span>
+                                </li>
+                                <li>
+                                    <span>Type:</span> 
+                                    <span className='linkTag'>{_media_type}</span>
+                                </li>
+                                
+                                <li><span>Release year:</span> <span className='linkTag'>{first_air_date}</span></li>
+                                {
+                                    budget && budget !== '' ? <li><span>Budget:- </span>
+                                    <span className='linkTag'> {budget}</span></li> : ''
+                                }
+                                
+                                <li><span>Country:</span> <span className='linkTag'>{origin_country}</span> </li>
+                            </ul>
+                            <div className="description_readmore_wrapper ">
+                                {overview}
+                            </div>
+                        </div>
+                    </div>
+                </Col>
+                <Col className='col-12 col-xl-6'>
+                    <div className='frameSec'>
+                        {/* <a rel="noreferrer" target="_blank" href={`https://www.youtube.com/watch?v=${video}`}>
+                            <figure className="youtubeImage">
+                                <span className='imageSec'>
+                                    <img src={videoBgPoster} alt="" title="" />
+                                </span>
+                                <span className='iconYoutube'></span>
+                            </figure>
+                        </a> */}
+                        <iframe width="560" height="315" src={`https://www.youtube.com/embed/${video}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                    </div>
                 </Col>
             </Row>
-        </Container>
-        </div>
+        )
+    }
+    return (
+        <>
+            <main className='detailsPage'>
+            <Container>
+                {
+                    titleName && titleName !==  '' ? renderDataHtml() : 'Loading...'
+                }
+                
+            </Container>
+            <section className='section'>
+                <div  className='contentHead'>
+                    <Container>
+                        <Row>
+                            <Col className='col-12'>
+                                {
+                                    credits && credits.length > 0 ? <DarkVariantExample data={credits} /> : 'Lading data...'
+                                }
+                                
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+            </section>
+        </main>
+        </>
     )
 }
 
-export default ContactContainer;
+export default DetailsContainer;
