@@ -1,60 +1,68 @@
-import AliceCarousel from 'react-alice-carousel';
-import 'react-alice-carousel/lib/alice-carousel.css';
-import { img_300, no_picture } from '../../config';
+import React from 'react';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 import './style.css';
-const handleDragStart = (e) => e.preventDefault();
 
-function DarkVariantExample({data}) {
-    //console.log('cast',data);
+import { BsFacebook, BsGithub, BsGoogle, BsLinkedin, BsStackOverflow, BsTwitter, BsYoutube } from "react-icons/bs";
+const FooterComponent = ()=>{
     
-   
-   const responsive = {
-    0: {
-        items: 1,
-    },
-    320: {
-        items: 2,
-    },
-    640: {
-        items: 3,
-    },
-    900: {
-        items: 4,
-    },
-    1024: {
-        items: 5
-    },
-    1280: {
-        items: 6
-    }
-  }
-  const items = data.map((item)=>{
-    return(
-        <div className="carouselItem">
-            <img onDragStart={handleDragStart}  src={item.profile_path ? `${img_300}/${item.profile_path}`:no_picture} 
-            alt={item.name} title={item.name} />
-        
-        <div className='carouselItemText'>
-            <div>Name :- {item.name}</div>
-            <div>Department :-  {item.known_for_department}</div>
-        </div>
-    </div>
-   ) 
-})
     return (
-      <div className='myCarWrap'>
-        <h2>Co-Star Informations</h2>
-        <AliceCarousel 
-        responsive={responsive}
-        autoPlay={true}
-        autoPlayInterval={5000}
-        infinite={true}
-        disableButtonsControls
-        disableDotsControls
-        mouseTracking 
-        items={items} />
-      </div>
-    );
-  }
-  
-  export default DarkVariantExample;
+        <>
+            <footer className='myFooter'>
+                <Container>
+                   <Row>
+                        <Col className=''>
+                            <h3 className='head_3'>Follow us :- </h3>
+                            <ul className='socialIconsList'>
+                                <li>
+                                    <a rel="noreferrer" href="https://www.facebook.com/rohitazadmalik/" target="_blank">
+                                        <BsFacebook />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a rel="noreferrer" href="https://www.linkedin.com/in/rohitazad/" target="_blank">
+                                        <BsLinkedin />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a rel="noreferrer" href="https://twitter.com/rohitazad" target="_blank">
+                                        <BsTwitter />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a rel="noreferrer" href="https://stackoverflow.com/users/1365428/rohit-azad-malik" target="_blank">
+                                        <BsStackOverflow />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a rel="noreferrer" href="https://rohitazadmalik.blogspot.com/" target="_blank">
+                                        <BsGoogle />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a rel="noreferrer" href="https://github.com/rohitazad" target="_blank">
+                                        <BsGithub />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a rel="noreferrer" href="https://www.youtube.com/c/AzadMalikRohit" target="_blank">
+                                        <BsYoutube />
+                                    </a>
+                                </li> 
+                            </ul>
+                            
+                        </Col>
+                        <Col className='col-12'>
+                            <div className="footerCopyright">
+                                <small>© Learn Coding With Bhai , 2022. Developed and Designed  by <a href="https://www.youtube.com/c/AzadMalikRohit" target="_blank" rel="noreferrer">Rohit Azad Malik (R.A.M)</a>.</small>
+                            </div>
+                        </Col>
+                   </Row>
+                </Container>
+            </footer>
+        </>
+    )
+}
+
+export default FooterComponent;
