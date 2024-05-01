@@ -5,25 +5,23 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import CardMoviesComponents from '../../Components/CardMovies';
 import PaginationComponent from '../../Components/Pagination';
+import SearchBarCardComponents from '../../Components/SearchBox';
 
-import LeftListBarComponent from '../../Components/LeftListBar';
-import useGenres from '../../Hooks/useGenres';
-
-const  MoviesContainer = ()=>{
+const  SearchContainer = ()=>{
     const [content, setContent] = useState([]);
+    const [pageno, setPageno] = useState(1);
+    const [paginationno, setPaginationno] = useState(0);
 
-    const [genres, setGenres] = useState([]);
-    const [selectedGenres, setSelectedGenres] = useState([]);
-
-    const [pageno, setPageno] = useState(1)
-    const [paginationno, setPaginationno] = useState(0)
+    const [searchValue, setSearchValue] = useState('crime');
+    const [typeValue, setTypeValue] = useState('movie');
     const API_KEY = process.env.REACT_APP_NOT_SECRET_CODE;
 
     
-    const genreforURL = useGenres(selectedGenres)
+    
     const GetDataTrending = async ()=>{
         
-        const {data} = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&page=${pageno}&with_genres=&language=en-US&with_genres=${genreforURL}`)
+        const {data} = await axios.get(`https://api.themoviedb.org/3/search/${typeValue}?api_key=${API_KEY}&page=${pageno}&language=en-US&query=${searchValue}&include_adult=false`);
+        console.log('data', data.results)
         setContent(data.results);
         setPaginationno(data.total_pages);
     }
@@ -34,11 +32,11 @@ const  MoviesContainer = ()=>{
         //eslint-disable-next-line
     }, [])
 
-    useEffect(()=>{
-        GetDataTrending();
-        //eslint-disable-next-line
-    }, [pageno, genreforURL])
-
+    const fetchDataQuery = ()=>{
+        // 
+        GetDataTrending()
+    }
+    
     const handleClick = (number)=>{
         setPageno(number);
     }
@@ -53,20 +51,24 @@ const  MoviesContainer = ()=>{
                 <Row>
                     <Col className='col-12'>
                         <section>
-                            <h1 className='txtCenter'>Top Trending Movies</h1>
+                            <h1 className='txtCenter'>Search Movies /  TV Series</h1>
                             <h3 className='txtCenter'> For You</h3>
+                            <SearchBarCardComponents 
+                                searchValue={searchValue}
+                                setSearchValue={(value)=>{setSearchValue(value)}}
+                                typeValue={typeValue}
+                                setTypeValue={(value)=>{setTypeValue(value)}}
+                                filterData={fetchDataQuery} />
                         </section>
                     </Col>
                 </Row>
                 <Row>
-                    <Col className='col-2'>
-                        <LeftListBarComponent genres={genres} selectedGenres={selectedGenres} setSelectedGenres={setSelectedGenres}  setGenres={setGenres} type="movie" setPage={setPageno}/> 
-                    </Col>
-                    <Col className='col-10'>
+                    
+                    <Col className='col-12'>
                         <Row>
                                 {
                                     content && content.length > 0 ? content.map((item, index)=>{
-                                        return (<CardMoviesComponents key={index} data={item} mediaType="movie"/>)
+                                        return (<CardMoviesComponents key={index} data={item} mediaType={typeValue}/>)
                                     }) : 'Loading ....'
                                 }
 
@@ -82,4 +84,4 @@ const  MoviesContainer = ()=>{
     )
 }
 
-export default MoviesContainer;
+export default SearchContainer;
