@@ -1,68 +1,47 @@
 import React from 'react';
-import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import './style.css';
 
-import { BsFacebook, BsGithub, BsGoogle, BsLinkedin, BsStackOverflow, BsTwitter, BsYoutube } from "react-icons/bs";
-const FooterComponent = ()=>{
-    
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import { Link } from 'react-router-dom';
+const HeaderComponent = ()=>{
+    const navData = [
+        {name:'Home', link:'/'},
+        {name:'Movies', link:'/movies'},
+        {name:'Tv Series', link:'/series'},
+        {name:'Search', link:'/search'},
+        {name:'Contact Us', link:'/contact'},
+        {name: 'About Us', link: '/about'}
+    ]
+
     return (
-        <>
-            <footer className='myFooter'>
+        <header  className='header'>
+            <Navbar bg="dark" expand="lg">
                 <Container>
-                   <Row>
-                        <Col className=''>
-                            <h3 className='head_3'>Follow us :- </h3>
-                            <ul className='socialIconsList'>
-                                <li>
-                                    <a rel="noreferrer" href="https://www.facebook.com/rohitazadmalik/" target="_blank">
-                                        <BsFacebook />
-                                    </a>
-                                </li>
-                                <li>
-                                    <a rel="noreferrer" href="https://www.linkedin.com/in/rohitazad/" target="_blank">
-                                        <BsLinkedin />
-                                    </a>
-                                </li>
-                                <li>
-                                    <a rel="noreferrer" href="https://twitter.com/rohitazad" target="_blank">
-                                        <BsTwitter />
-                                    </a>
-                                </li>
-                                <li>
-                                    <a rel="noreferrer" href="https://stackoverflow.com/users/1365428/rohit-azad-malik" target="_blank">
-                                        <BsStackOverflow />
-                                    </a>
-                                </li>
-                                <li>
-                                    <a rel="noreferrer" href="https://rohitazadmalik.blogspot.com/" target="_blank">
-                                        <BsGoogle />
-                                    </a>
-                                </li>
-                                <li>
-                                    <a rel="noreferrer" href="https://github.com/rohitazad" target="_blank">
-                                        <BsGithub />
-                                    </a>
-                                </li>
-                                <li>
-                                    <a rel="noreferrer" href="https://www.youtube.com/c/AzadMalikRohit" target="_blank">
-                                        <BsYoutube />
-                                    </a>
-                                </li> 
-                            </ul>
-                            
-                        </Col>
-                        <Col className='col-12'>
-                            <div className="footerCopyright">
-                                <small>© Learn Coding With Bhai , 2022. Developed and Designed  by <a href="https://www.youtube.com/c/AzadMalikRohit" target="_blank" rel="noreferrer">Rohit Azad Malik (R.A.M)</a>.</small>
-                            </div>
-                        </Col>
-                   </Row>
+                    <Navbar.Brand>My Entertainment</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="navbarScroll" />
+                    <Navbar.Collapse id="navbarScroll">
+                    <Nav
+                        className="me-auto my-2 my-lg-0"
+                        style={{ maxHeight: '100px' }}
+                        navbarScroll
+                    >
+                        {
+                            navData.map((item)=>{
+                                return (
+                                    <Nav key={item.name}>
+                                        <Link to={item.link}>{item.name}</Link>
+                                    </Nav> 
+                                )
+                            })
+                        }
+                    </Nav>
+                    </Navbar.Collapse>
                 </Container>
-            </footer>
-        </>
+            </Navbar>
+                    
+        </header>
     )
 }
 
-export default FooterComponent;
+export default HeaderComponent;
